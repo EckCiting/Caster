@@ -1,7 +1,9 @@
 ﻿using Caster.Modules;
 using Newtonsoft.Json;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -81,7 +83,6 @@ namespace Caster
                 var deserialized = JsonConvert.DeserializeObject<List<ServerInfo>>(json);
                 servers = deserialized ?? servers;
             }
-            Console.WriteLine(servers);
             // 移除选中的项
             servers.Remove(selectedServer);
 
@@ -99,7 +100,59 @@ namespace Caster
         // DeployButotn_Click
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
-
+            // 获取选中的项
+            ServerInfo selectedServer = (ServerInfo)ServerList.SelectedItem;
+            Test_SSH_Connection(selectedServer);
         }
+
+        private void Test_SSH_Connection(ServerInfo serverInfo)
+        {
+            string keyPath = Path.Combine(@"C:\Users\" + Environment.UserName + @"\.ssh\", serverInfo.PrivateKeyFileName);
+
+            // Create a new instance of the PrivateKeyFile class with the path to the private key file
+            var keyFile = new PrivateKeyFile(keyPath);
+            var keyFiles = new[] { keyFile };
+
+            // Create a new instance of the ConnectionInfo class with the connection details
+            var connectionInfo = new ConnectionInfo(
+                serverInfo.Host,
+                serverInfo.Username,
+                new PrivateKeyAuthenticationMethod(serverInfo.Username, keyFiles));
+
+            // Create a new instance of the SshClient class with the connection info
+            using (var client = new SshClient(connectionInfo))
+            {
+                try
+                {
+                    // Connect to the SSH server
+                    client.Connect();
+
+                    // Check if the client is connected
+                    if (client.IsConnected)
+                    {
+                        MessageBox.Show("Connection successful!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Connection failed!");
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Handle any exceptions that occur during the connection attempt
+                    MessageBox.Show($"Connection failed: {e.Message}");
+                }
+                finally
+                {
+                    // Disconnect from the SSH server
+                    if (client.IsConnected)
+                    {
+                        client.Disconnect();
+                    }
+                }
+            }
+        }
+
+
     }
 }

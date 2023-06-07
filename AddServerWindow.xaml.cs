@@ -22,16 +22,19 @@ namespace Caster
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             // 获取用户输入的数据
+            string username = UsernameBox.Text;
             string host = HostBox.Text;
             int port = int.Parse(PortBox.Text); // 假设用户总是输入一个有效的整数
-            string target = TargetBox.Text;
+            string keyname = PrivateKeyFileBox.Text;
+
 
             // 创建一个新的ServerInfo对象
             ServerInfo newServerInfo = new ServerInfo
             {
+                Username = username,
                 Host = host,
                 Port = port,
-                Target = target,
+                PrivateKeyFileName = keyname
             };
 
             // 读取现有的数据
@@ -58,7 +61,7 @@ namespace Caster
             File.WriteAllText(path, newJson);
 
             // 提示保存成功
-            MessageBox.Show("保存成功");
+            MessageBox.Show("Success");
 
             // 关闭窗口
             this.Close();
