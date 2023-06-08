@@ -1,4 +1,5 @@
 ﻿using Caster.Modules;
+using static Caster.Utils.GlobalVariables;
 
 using System.Collections.Generic;
 using System.Windows;
@@ -39,8 +40,7 @@ namespace Caster
 
             // 读取现有的数据
             List<ServerInfo> servers;
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string path = Path.Combine(projectDirectory, "Data", "server.json");
+            string path = Path.Combine(PROJ_DIR, "Data", "server.json");
             if (File.Exists(path))
             {
                 string json = File.ReadAllText(path);

@@ -1,4 +1,6 @@
 ﻿using Caster.Modules;
+using static Caster.Utils.SSHUtil;
+using static Caster.Utils.GlobalVariables;
 using Newtonsoft.Json;
 using Renci.SshNet;
 using System;
@@ -15,6 +17,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Runtime.CompilerServices;
+using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace Caster
 {
@@ -27,8 +32,7 @@ namespace Caster
         {
             InitializeComponent();
 
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string path = Path.Combine(projectDirectory, "Data", "server.json");
+            string path = Path.Combine(PROJ_DIR, "Data", "server.json");
 
             if (File.Exists(path))
             {
@@ -50,8 +54,7 @@ namespace Caster
             addServerWindow.ShowDialog(); // ShowDialog will block the current thread until the window is closed
 
             // Reload data from server.json and update ListBox
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string path = Path.Combine(projectDirectory, "Data", "server.json");
+            string path = Path.Combine(PROJ_DIR, "Data", "server.json");
 
             if (File.Exists(path))
             {
@@ -74,8 +77,7 @@ namespace Caster
             }
 
             // 读取现有的数据
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string path = Path.Combine(projectDirectory, "Data", "server.json");
+            string path = Path.Combine(PROJ_DIR, "Data", "server.json");
             List<ServerInfo> servers = new List<ServerInfo>();
             if (File.Exists(path))
             {
@@ -102,56 +104,8 @@ namespace Caster
         {
             // 获取选中的项
             ServerInfo selectedServer = (ServerInfo)ServerList.SelectedItem;
-            Test_SSH_Connection(selectedServer);
         }
 
-        private void Test_SSH_Connection(ServerInfo serverInfo)
-        {
-            string keyPath = Path.Combine(@"C:\Users\" + Environment.UserName + @"\.ssh\", serverInfo.PrivateKeyFileName);
-
-            // Create a new instance of the PrivateKeyFile class with the path to the private key file
-            var keyFile = new PrivateKeyFile(keyPath);
-            var keyFiles = new[] { keyFile };
-
-            // Create a new instance of the ConnectionInfo class with the connection details
-            var connectionInfo = new ConnectionInfo(
-                serverInfo.Host,
-                serverInfo.Username,
-                new PrivateKeyAuthenticationMethod(serverInfo.Username, keyFiles));
-
-            // Create a new instance of the SshClient class with the connection info
-            using (var client = new SshClient(connectionInfo))
-            {
-                try
-                {
-                    // Connect to the SSH server
-                    client.Connect();
-
-                    // Check if the client is connected
-                    if (client.IsConnected)
-                    {
-                        MessageBox.Show("Connection successful!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Connection failed!");
-                    }
-                }
-                catch (Exception e)
-                {
-                    // Handle any exceptions that occur during the connection attempt
-                    MessageBox.Show($"Connection failed: {e.Message}");
-                }
-                finally
-                {
-                    // Disconnect from the SSH server
-                    if (client.IsConnected)
-                    {
-                        client.Disconnect();
-                    }
-                }
-            }
-        }
 
 
     }
