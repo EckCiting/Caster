@@ -30,13 +30,12 @@ namespace Caster
 
 
             // 创建一个新的ServerInfo对象
-            ServerInfo newServerInfo = new ServerInfo
-            {
-                Username = username,
-                Host = host,
-                Port = port,
-                PrivateKeyFileName = keyname
-            };
+            ServerInfo newServerInfo = new ServerInfo(
+                username,
+                host,
+                port,
+                keyname
+            );
 
             // 读取现有的数据
             List<ServerInfo> servers;

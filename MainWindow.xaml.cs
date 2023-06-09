@@ -99,6 +99,13 @@ namespace Caster
             ServerList.ItemsSource = servers;
         }
 
+        // AddCredentialButton_Click
+        private void AddCredentialButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddCredentialWindow addCredentialWindow = new AddCredentialWindow();
+            addCredentialWindow.ShowDialog(); // ShowDialog will block the current thread until the window is closed
+        }
+
         // DeployButotn_Click
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
@@ -106,7 +113,7 @@ namespace Caster
             ServerInfo selectedServer = (ServerInfo)ServerList.SelectedItem;
         }
 
-
+       
 
     }
 }

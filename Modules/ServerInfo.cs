@@ -9,11 +9,18 @@ namespace Caster.Modules
 {
     public class ServerInfo
     {
-        public string Username { get; set; }
+        public string Username { get ; set; }
         public string Host { get; set; }
         public int Port { get; set; }
         public string PrivateKeyFileName { get; set; } = "id_rsa";
 
+        public ServerInfo(string username, string host, int port, string privateKeyFileName)
+        {
+            Username = username;
+            Host = host;
+            Port = port;
+            PrivateKeyFileName = privateKeyFileName;
+        }
         public override string ToString()
         {
             return $"{Username}@{Host}:{Port}";

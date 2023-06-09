@@ -47,7 +47,7 @@
                 </StackPanel>
             </Grid>
         </Grid>
-
+        <Button x:Name="AddCredentialButton" Content="Add Credential" Click="AddCredentialButton_Click" Width="120" Height="30" HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Column="0" Grid.Row="2"/>
         <Button x:Name="DeployButton" Content="Deploy SSL" Grid.Row="2" Click="DeployButton_Click" Width="100" Height="30" HorizontalAlignment="Right"/>
     </Grid>
 </Window>
