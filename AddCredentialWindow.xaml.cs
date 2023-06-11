@@ -38,13 +38,12 @@ namespace Caster
             string email = EmailBox.Text;
             string CF_key = TokenBox.Text;
 
-            DNSAuthInfo inputDNSAuthInfo = new DNSAuthInfo(
+            CredentialInfo inputDNSAuthInfo = new CredentialInfo(
                 domain,
-                Zoneid,
                 email,
+                Zoneid,
                 CF_key
             );
-
             inputDNSAuthInfo.SaveToFile();
 
             // 提示保存成功

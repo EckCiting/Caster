@@ -8,25 +8,52 @@
         Title="Caster" Height="450" Width="800">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+ 
         <Grid Grid.Row="0" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <Label Content="Email Address:" Grid.Column="0"/>
-            <TextBox x:Name="EmailBox" Width="200" Margin="5,0,0,0" Grid.Column="1"/>
+                <Label Content="Domain:" Grid.Row="0"/>
 
-            <Label Content="Domain:" Grid.Column="2"/>
-            <TextBox x:Name="DomainBox" Width="200" Margin="5,0,0,0" Grid.Column="3"/>
+                <ListBox x:Name="CredentialList" Grid.Row="1">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding Domain}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Email}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button x:Name="AddCredentialButton" Content="+" Click="AddCredentialButton_Click" Width="30" Height="30" />
+                    <Button x:Name="RemoveCredentialButton" Content="-" Click="RemoveCredentialButton_Click" Width="30" Height="30" />
+                </StackPanel>
+            </Grid>
+            
         </Grid>
+
 
         <Grid Grid.Row="1" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
@@ -35,19 +62,19 @@
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                <Label Content="Server:" Grid.Row="0"/>
+                <ListBox x:Name="ServerList" Grid.Row="1" />
 
-                <ListBox x:Name="ServerList" Grid.Row="0" />
-
-                <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                     <Button x:Name="AddServerButton" Content="+" Click="AddServerButton_Click" Width="30" Height="30" />
                     <Button x:Name="RemoveServerButton" Content="-" Click="RemoveServerButton_Click" Width="30" Height="30" />
                 </StackPanel>
             </Grid>
         </Grid>
-        <Button x:Name="AddCredentialButton" Content="Add Credential" Click="AddCredentialButton_Click" Width="120" Height="30" HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Column="0" Grid.Row="2"/>
         <Button x:Name="DeployButton" Content="Deploy SSL" Grid.Row="2" Click="DeployButton_Click" Width="100" Height="30" HorizontalAlignment="Right"/>
     </Grid>
 </Window>

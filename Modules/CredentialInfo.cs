@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Printing;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,71 +15,96 @@ using static Caster.Utils.GlobalVariables;
 
 namespace Caster.Modules
 {
-    internal class DNSAuthInfo
+    internal class CredentialInfo
     {
         public string Domain { get; set; }
         public string Email { get; set; }
         public string CF_token { get; set; }
         public string ZoneId { get; set; }
-        public DNSAuthInfo(string domain, string email, string cf_token, string zoneId)
+        public CredentialInfo(string domain, string email, string cf_token, string zoneId)
         {
             Domain = domain;
-            ZoneId = zoneId;
             Email = email;
             CF_token = cf_token;
+            ZoneId = zoneId;
         }
-        
+
+        // ToString
+        public override string ToString()
+        {
+            return $"{Domain}:{Email}";
+        }
+        // Equals
+        public override bool Equals(object obj)
+        {
+            if (obj is CredentialInfo other)
+            {
+                return Domain == other.Domain && Email == other.Email;
+            }
+            return false;
+        }
+
         public void SaveToFile()
         {
-            DNSAuthInfo newDNSAuth = new DNSAuthInfo(this.Domain,
-                Encrypt(this.ZoneId),
-                Encrypt(this.Email), 
-                Encrypt(this.CF_token)
+            CredentialInfo newDNSAuth = new CredentialInfo(this.Domain,
+                this.Email,
+                Encrypt(this.CF_token),
+                Encrypt(this.ZoneId)
                 );
             // 读取现有的数据
-            List<DNSAuthInfo> cretentials;
-            string path = Path.Combine(PROJ_DIR, "Data", "dnsauth.json");
+            List<CredentialInfo> cretentials;
+            string path = Path.Combine(PROJ_DIR, "Data", "credential.json");
             if (File.Exists(path))
             {
                 string json = File.ReadAllText(path);
-                cretentials = JsonConvert.DeserializeObject<List<DNSAuthInfo>>(json);
+                cretentials = JsonConvert.DeserializeObject<List<CredentialInfo>>(json);
             }
             else
             {
-                cretentials = new List<DNSAuthInfo>();
+                cretentials = new List<CredentialInfo>();
             }
 
-            // 添加新的ServerInfo对象到列表中
-            cretentials.Add(newDNSAuth);
-            // 将列表序列化为JSON格式
-            string newJson = JsonConvert.SerializeObject(newDNSAuth, Newtonsoft.Json.Formatting.Indented);
+            bool isDuplicateDomain = cretentials.Any(c => c.Domain == newDNSAuth.Domain);
 
-            // 写入到文件中
-            File.WriteAllText(path, newJson);
+            if (!isDuplicateDomain)
+            {
+                // 添加新的ServerInfo对象到列表中
+                cretentials.Add(newDNSAuth);
+                // 将列表序列化为JSON格式
+                string newJson = JsonConvert.SerializeObject(cretentials, Newtonsoft.Json.Formatting.Indented);
 
+                // 写入到文件中
+                File.WriteAllText(path, newJson);
+            }
+            else
+            {
+                MessageBox.Show("Duplicate domain name found. Please check your input.");
+            }
         }
 
-        public static DNSAuthInfo ReadFromFile(string domain)
+
+
+        public static CredentialInfo FindCredentialByDomain(string domain)
         {
-            string path = Path.Combine(PROJ_DIR, "Data", "dnsauth.json");
-            DNSAuthInfo result = null;
+            string path = Path.Combine(PROJ_DIR, "Data", "credential.json");
+            CredentialInfo result = null;
             if (File.Exists(path))
             {
                 // 读取文件
                 string json = File.ReadAllText(path);
                 // 反序列化为 DNSAuthInfo 列表
-                List<DNSAuthInfo> cretentials = JsonConvert.DeserializeObject<List<DNSAuthInfo>>(json);
+                List<CredentialInfo> cretentials = JsonConvert.DeserializeObject<List<CredentialInfo>>(json);
 
                 // 基于 this.Domain 查找对应的记录
                 var foundAuthInfo = cretentials.FirstOrDefault(a => a.Domain == domain);
                 if (foundAuthInfo != null)
                 {
                     // 如果找到了对应的记录，对数据进行解密
-                    result = new DNSAuthInfo(
+                    result = new CredentialInfo(
                         domain,
-                        Decrypt(foundAuthInfo.Email),
-                        Decrypt(foundAuthInfo.ZoneId),
-                        Decrypt(foundAuthInfo.CF_token)
+                        foundAuthInfo.Email,
+                        Decrypt(foundAuthInfo.CF_token),
+                        Decrypt(foundAuthInfo.ZoneId)
                         );
 
                 }

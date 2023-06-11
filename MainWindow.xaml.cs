@@ -32,17 +32,29 @@ namespace Caster
         {
             InitializeComponent();
 
-            string path = Path.Combine(PROJ_DIR, "Data", "server.json");
+            string serverPath = Path.Combine(PROJ_DIR, "Data", "server.json");
 
-            if (File.Exists(path))
+            if (File.Exists(serverPath))
             {
-                string json = File.ReadAllText(path);
+                string json = File.ReadAllText(serverPath);
                 var servers = JsonConvert.DeserializeObject<List<ServerInfo>>(json);
                 ServerList.ItemsSource = servers;
+            }
+
+            string credentialPath = Path.Combine(PROJ_DIR, "Data", "credential.json");
+            if (File.Exists(credentialPath)) {
+                string json = File.ReadAllText(credentialPath);
+                var credentials = JsonConvert.DeserializeObject<List<CredentialInfo>>(json);
+                CredentialList.ItemsSource = credentials;
             }
         }
 
         private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CredentialList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
@@ -104,7 +116,52 @@ namespace Caster
         {
             AddCredentialWindow addCredentialWindow = new AddCredentialWindow();
             addCredentialWindow.ShowDialog(); // ShowDialog will block the current thread until the window is closed
+
+            // Reload data from credential.json and update ListBox
+            string path = Path.Combine(PROJ_DIR, "Data", "credential.json");
+
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                var credentials = JsonConvert.DeserializeObject<List<CredentialInfo>>(json);
+                CredentialList.ItemsSource = credentials;
+            }
+
         }
+        // RemoveCredentialButton_Click
+        private void RemoveCredentialButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 获取选中的项
+            CredentialInfo selectedCredential = (CredentialInfo)CredentialList.SelectedItem;
+
+            if (selectedCredential == null)
+            {
+                // 如果没有选中任何项，则直接返回
+                return;
+            }
+
+            // 读取现有的数据
+            string path = Path.Combine(PROJ_DIR, "Data", "credential.json");
+            List<CredentialInfo> credentials = new List<CredentialInfo>();
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                var deserialized = JsonConvert.DeserializeObject<List<CredentialInfo>>(json);
+                credentials = deserialized ?? credentials;
+            }
+            // 移除选中的项
+            credentials.Remove(selectedCredential);
+
+            // 将列表序列化为JSON格式
+            string newJson = JsonConvert.SerializeObject(credentials, Newtonsoft.Json.Formatting.Indented);
+
+            // 写入到文件中
+            File.WriteAllText(path, newJson);
+
+            // 更新ListBox的数据源
+            CredentialList.ItemsSource = null;
+            CredentialList.ItemsSource = credentials;
+        } 
 
         // DeployButotn_Click
         private void DeployButton_Click(object sender, RoutedEventArgs e)
