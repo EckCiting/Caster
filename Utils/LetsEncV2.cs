@@ -85,8 +85,8 @@ namespace Caster.Utils
                 }
             }
 
-            File.WriteAllText(PROJ_DIR + "Data/" + "/testcert.pem", cert.ToPem());
-            File.WriteAllText(PROJ_DIR + "Data/" + "/testkey.pem", privateKey.ToPem());
+            File.WriteAllText(Path.Combine(PROJ_DIR, "Data", "ssl" ,"fullchain.pem"), cert.ToPem());
+            File.WriteAllText(Path.Combine(PROJ_DIR, "Data", "ssl", "privkey.pem"), privateKey.ToPem());
         }
     }
 }
