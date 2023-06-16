@@ -41,8 +41,8 @@ namespace Caster
             CredentialInfo inputDNSAuthInfo = new CredentialInfo(
                 domain,
                 email,
-                Zoneid,
-                CF_key
+                CF_key,
+                Zoneid
             );
             inputDNSAuthInfo.SaveToFile();
 

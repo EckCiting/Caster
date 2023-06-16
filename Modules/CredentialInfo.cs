@@ -43,7 +43,21 @@ namespace Caster.Modules
             }
             return false;
         }
+        // HashCode
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Domain, Email);
+        }
 
+        public CredentialInfo DecryptThisRecord()
+        {
+            return new CredentialInfo(
+                this.Domain,
+                this.Email,
+                Decrypt(this.CF_token),
+                Decrypt(this.ZoneId)
+            );
+        }
         public void SaveToFile()
         {
             CredentialInfo newDNSAuth = new CredentialInfo(this.Domain,

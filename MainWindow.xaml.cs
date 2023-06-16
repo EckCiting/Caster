@@ -20,6 +20,10 @@ using System.Windows.Navigation;
 using System.Runtime.CompilerServices;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
+using Certes.Acme.Resource;
+using Certes.Acme;
+using Caster.Utils;
+using Certes;
 
 namespace Caster
 {
@@ -164,10 +168,27 @@ namespace Caster
         } 
 
         // DeployButotn_Click
-        private void DeployButton_Click(object sender, RoutedEventArgs e)
+        private async void DeployButton_Click(object sender, RoutedEventArgs e)
         {
             // 获取选中的项
             ServerInfo selectedServer = (ServerInfo)ServerList.SelectedItem;
+            CredentialInfo selectedCredential = (CredentialInfo)CredentialList.SelectedItem;
+
+            // Generate server
+            if (selectedServer == null)
+            {
+                MessageBox.Show("Please select a server");
+                return;
+            }
+            else if (selectedCredential == null)
+            {
+                MessageBox.Show("Please select a credential");
+                return;
+            }
+            else
+            {
+                await LetsEncV2.RegisterCertificate(selectedCredential);
+            }
         }
 
        
