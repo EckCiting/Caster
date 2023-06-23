@@ -189,8 +189,8 @@ namespace Caster
             {
                 await LetsEncV2.RegisterCertificate(selectedCredential);
                 // the generated fullchain.pem and privkey.pem will be in Data folder
-                SSHUtil.SCP_UPLOAD(selectedServer, Path.Combine(PROJ_DIR, "Data","fullchain.pem"),"fullchain.pem");
-                SSHUtil.SCP_UPLOAD(selectedServer, Path.Combine(PROJ_DIR, "Data","privkey.pem"), "privkey.pem");
+                SSHUtil.SCP_UPLOAD(selectedServer, Path.Combine(PROJ_DIR, "Data", "ssl" , "fullchain.pem"), "ssl/fullchain.pem");
+                SSHUtil.SCP_UPLOAD(selectedServer, Path.Combine(PROJ_DIR, "Data", "ssl", "privkey.pem"), "ssl/privkey.pem");
 
             }
         }
